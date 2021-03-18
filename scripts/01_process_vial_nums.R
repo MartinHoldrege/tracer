@@ -18,7 +18,7 @@ library(googlesheets4)
 url <- "https://docs.google.com/spreadsheets/d/1ydpXqb52yzdgneyCcOjy8RBcGhiJJZMwipSG1JvrHgw/edit#gid=1385148614"
 
 df1 <- read_sheet(url, sheet = "vial_num",
-                  col_types = "cdDddd", na = c("", "NA"))
+                  col_types = "cdDdddddd", na = c("", "NA"))
 
 
 # problem vial nums -------------------------------------------------------
@@ -35,7 +35,7 @@ prob_rows <- df1 %>%
   mutate(adjacent_in_notebook = NA,
          entered_correctly = NA)
 
-write_csv(prob_rows, "data-processed/vial_nums2check_v2.csv")
+write_csv(prob_rows, "data-processed/vial_nums2check_v3.csv")
 
 # checking if any values that are wrong are just simple switch problems
 # (doesn't look like)
@@ -135,9 +135,9 @@ sink()
 sort_mis <- sort1 %>% 
   filter(suspect_vial_num)
 
-sink("sheets-for-sorting/vial_labels_for_sort_mislabled.txt")
+# sink("sheets-for-sorting/vial_labels_for_sort_mislabled.txt")
 
 cat("mislabled vials\n")
 cut_fun(sort_mis)
 
-sink()
+# sink()
