@@ -7,7 +7,7 @@
 
 
 # which set (run) to focus on
-set_num <- 2
+set_num <- 4
 
 
 # packages ----------------------------------------------------------------
@@ -179,3 +179,4 @@ if (TRUE){
   write_csv(out1, out1_path)
   write_csv(out2, out2_path)
 }
+
