@@ -210,8 +210,6 @@ if (TRUE) {
 }
 
 
-# Code below not yet updated/used
-if (FALSE){
 # prep chem correct files -------------------------------------------------
 
 # chem correct files can only have 250 lines.
@@ -268,9 +266,6 @@ dfs_4chem <- map(clean4, function(x) {
 map(dfs_4chem, function(dfs) map_dbl(dfs, nrow))
 n_files <- map_dbl(dfs_4chem, length)
 
-# an example where first file for chem correct <250 so that
-# vial doesn't get 'split'
-tail(dfs_4chem$Phal3[[1]])
 
 # save files --------------------------------------------------------------
 # everyting after / ie just file name
@@ -285,18 +280,17 @@ clean_paths <- map2(short_paths, n_files, function(x, y) {
 if (FALSE) {
   map2(dfs_4chem, clean_paths, function(dfs, paths) {
     map2(dfs, paths, function(df, path) {
-      write_csv(df, file.path("data_processed/clean_4cc", path))
+      write_csv(df, file.path("data-processed/clean_4cc", path))
     })
   })
 }
 
-dfs_4chem$Phal10 %>% View()
-
 
 # comparing old to new discarded file -------------------------------------
 
-d1 <- read_csv("data_processed/bad_vials/Phal_bad_vials.csv")
+d1 <- read_csv("data-processed/hw_bad_vials_v1.csv")
 d2 <- discarded
 
 anti_join(d2, d1)
-}
+
+
