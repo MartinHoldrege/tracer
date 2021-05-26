@@ -4,7 +4,7 @@
 
 # this script is for creating sample description files for use with Picarro
 
-
+# also output joined sample_and_vial_info.csv for use in later scripts
 
 # which set (run) to focus on
 set_num <- 6
@@ -31,6 +31,11 @@ sample1 <- read_sheet(url, sheet = "sample_description",
 vial_num1 <- read_sheet(url, sheet = "vial_num",
                         col_types = "cdDdddddd", 
                         na = c("", "NA"))
+
+# locations/dates of injections
+loc1 <- read_sheet(url, sheet = "injection_loc",
+                   col_types = "Ddcd", 
+                   na = c("", "NA"))
 
 
 # data integrity checks ---------------------------------------------------
@@ -87,6 +92,47 @@ id2 <- info1 %>%
   rename(identifier_1 = vial_num) %>% 
   select(identifier_1, identifier_2) %>% 
   mutate(identifier_1 = as.character(identifier_1))
+
+# * save sample and vial info ---------------------------------------------
+# given that samples were injected from 10 to 70 cm clockwise by subplot
+# this depth was mislabled
+loc1$`depth (cm)`[loc1$plot == 8 & loc1$subplot == "NW"] <- 20
+loc2 <- loc1 %>% 
+  rename(date_inject = date,
+         depth = `depth (cm)`) %>% 
+  select(-subplot)
+
+check <- loc2 %>% 
+  group_by(plot, depth) %>% 
+  summarise(n = n()) %>% 
+  print(n = 35)
+
+if(!all(check$n == 2) | nrow(check) != 32) {
+  stop("incorrect info on injection locations/dates")
+}
+
+  
+# this is the vial num joined with the sample num
+# to include sample information. for use in 04_compile_ChemChorrect_output.R
+info2 <- info1 %>% 
+  left_join(sample1, by = "sample_num")
+
+days_sinc_inject <- loc2 %>% 
+  mutate(days_since_inject = as.numeric(date - date_inject)) %>% 
+  filter(days_since_inject >= 0)
+# days since injections for each sampling date/depth added
+info3 <- info2 %>% 
+  select(date, plot, depth) %>% 
+  filter(!duplicated(.)) %>% 
+  left_join(loc2, by = c("plot", "depth")) %>% 
+  mutate(days_since_inject = as.numeric(date - date_inject)) %>% 
+  filter(days_since_inject >= 0) %>% 
+  group_by(date, plot, depth) %>% 
+  # need filter otherwise 2 date_inject dates for second sampling event
+  filter(days_since_inject == min(days_since_inject)) %>% 
+  right_join(info2, by = c("date", "plot", "depth"))
+
+write_csv(info3, "data-processed/sample_and_vial_info.csv")
 
 # prep tray file ----------------------------------------------------------
 
@@ -175,8 +221,10 @@ out1_path <- paste0("data-processed/sample_descriptions/hw",
 out2_path <- paste0("data-processed/sample_descriptions/hw",
                     set_string, "_2.csv")
 
-if (TRUE){
+if (FALSE){
   write_csv(out1, out1_path)
   write_csv(out2, out2_path)
 }
+
+
 
