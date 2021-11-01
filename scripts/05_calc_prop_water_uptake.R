@@ -112,7 +112,7 @@ control %>%
   summarize(cal_2h_mean = mean(cal_2h_mean)) 
 
 hist(control$raw_2h_mean) # some high (contaminated?) values
-
+hist(control$raw_18o_mean)
 
 cc4 <- cc3 %>% 
   filter(date != "2020-07-12")
