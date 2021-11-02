@@ -10,6 +10,10 @@
 library(tidyverse)
 library(readxl)
 
+# this just makes available a function that knows which plots
+# at HW ranch had what treatments
+source("https://raw.githubusercontent.com/MartinHoldrege/Rfunctions/master/assign_trmts_functions.r")
+
 # read in data ------------------------------------------------------------
 
 # * chemcorrect output ----------------------------------------------------
@@ -121,9 +125,13 @@ stopifnot(
 
 comb_good1$pft <- pft_lookup[comb_good1$species]
 
+
+# add trmt label ----------------------------------------------------------
+
+comb_good1$trmt <- trmts_HWRanch(comb_good1$plot, dump_label = TRUE)
+comb_good1$lohi <- lohi_HWRanch(comb_good1$plot)
+
 # save files --------------------------------------------------------------
-
-
 
 write_csv(comb_good1, "data-processed/hw_combined_cc_output.csv")
 

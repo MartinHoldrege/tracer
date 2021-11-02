@@ -29,10 +29,13 @@ data.
 ## data_processed/hw_combined_cc_output.csv--the combined chemcorrect output with sample descriptions joined in. 
 This is a good starting point for downstream analysis. 
 Some important columns in this file include:
+
 date--date sample collected
+
 plot--plot number--this is the large 8x8 m plot (ie with rain-out shelter),
 and 4 subplots were located in each plot, each subplot and a fixed injection
 depth. 
+
 depth--depth (cm) at which injection took place for the given subplot. Subplots
 were located in each quadrant of the plot, and the depth was assigned pseudo-randomly. 
 
@@ -61,6 +64,9 @@ raw_2h_mean--uncalibrated deuterium levels (per mil).
 
 pft--plant functional type (based on the species column). 
 
+trmt--treatment (as in ecology paper)
+
+lohi--does the treatment fall in the high or low precipitation intensity category. 
 
 ## Descriptions of scripts
 
